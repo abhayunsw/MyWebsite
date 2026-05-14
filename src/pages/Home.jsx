@@ -1,11 +1,12 @@
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
-import { distance, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 function Home() {
   const [init, setInit] = useState(false)
   const [displayText, setDisplayText] = useState('')
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const fullText = "HELLO, I'M"
 
   // particles init
@@ -13,6 +14,13 @@ function Home() {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine)
     }).then(() => setInit(true))
+  }, [])
+
+  // detect mobile on resize
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   // typewriter effect
@@ -48,7 +56,7 @@ function Home() {
           options={{
             background: { color: { value: 'transparent' } },
             particles: {
-              number: { value: 100 },
+              number: { value: isMobile ? 30 : 100 },
               color: { value: ['#a855f7', '#ec4899', '#3b82f6'] },
               links: {
                 enable: true,
@@ -99,11 +107,11 @@ function Home() {
         }}
         style={{
           position: 'absolute',
-          left: '-35%',
+          left: isMobile ? '-10%' : '-35%',
           bottom: '0%',
-          height: '110%',
+          height: isMobile ? '60%' : '110%',
           zIndex: 1,
-          opacity: 0.15,
+          opacity: isMobile ? 0.08 : 0.15,
         }}
       >
         <img
@@ -121,12 +129,13 @@ function Home() {
         position: 'relative',
         zIndex: 10,
         textAlign: 'center',
+        padding: '0 20px',
       }}>
 
         {/* HELLO I'M — typewriter */}
         <h2 style={{
           color: '#a855f7',
-          fontSize: '1.5em',
+          fontSize: isMobile ? '1em' : '1.5em',
           fontWeight: 'normal',
           marginBottom: '10px',
           letterSpacing: '6px',
@@ -147,7 +156,7 @@ function Home() {
           transition={{ duration: 1, delay: 1.2 }}
           style={{
             color: 'white',
-            fontSize: '5.5em',
+            fontSize: isMobile ? '3em' : '5.5em',
             fontWeight: 'bold',
             margin: '0',
             textShadow: '0 0 20px rgba(168,85,247,0.5), 0 0 40px rgba(236,72,153,0.3)',
@@ -164,9 +173,9 @@ function Home() {
           transition={{ duration: 1, delay: 1.8 }}
           style={{
             color: 'rgba(255,255,255,0.5)',
-            fontSize: '1em',
+            fontSize: isMobile ? '0.7em' : '1em',
             marginTop: '15px',
-            letterSpacing: '3px',
+            letterSpacing: isMobile ? '1px' : '3px',
           }}
         >
           CS STUDENT AT UNSW · FITNESS · PHILOSOPHY
@@ -185,11 +194,11 @@ function Home() {
           onClick={() => window.location.href = '/about'}
           style={{
             marginTop: '40px',
-            padding: '14px 50px',
+            padding: isMobile ? '10px 30px' : '14px 50px',
             background: 'linear-gradient(135deg, #a855f7, #ec4899)',
             border: 'none',
             color: 'white',
-            fontSize: '1em',
+            fontSize: isMobile ? '0.8em' : '1em',
             borderRadius: '30px',
             cursor: 'pointer',
             letterSpacing: '3px',
